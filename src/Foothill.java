@@ -8,63 +8,11 @@ import java.util.Random;
 class EBookCompInt implements Comparable<Integer>
 {
    private EBookEntry data;
-   private State state;
    static final String lineSeparator = System.lineSeparator();
-
-   public enum State
-   {
-      ACTIVE,
-      EMPTY,
-      DELETED;
-   }
-
-   EBookCompInt()
-   {
-      data = null;
-      state = State.EMPTY;
-   }
 
    EBookCompInt(EBookEntry b)
    {
       data = b;
-      state = State.ACTIVE;
-   }
-
-
-   EBookCompInt(EBookEntry b, int st)
-   {
-      data = b;
-      setState(st);
-   }
-
-   private void setState(int st)
-   {
-      switch (st)
-      {
-         case 1:
-            state = State.ACTIVE;
-            break;
-         case 2:
-            state = State.EMPTY;
-            break;
-         case 3:
-            state = State.DELETED;
-            break;
-      }
-   }
-
-   public int getState()
-   {
-      switch (state)
-      {
-         case ACTIVE:
-            return 1;
-         case EMPTY:
-            return 2;
-         case DELETED:
-            return 3;
-      }
-      return 0;
    }
 
    public int compareTo(Integer o)
@@ -79,8 +27,6 @@ class EBookCompInt implements Comparable<Integer>
               + "   \"" + data.getTitle() + "\""  + lineSeparator
               + "   by " + data.getCreator()  + lineSeparator
               + "   re: " + data.getSubject() + lineSeparator + lineSeparator;
-//      return data.toString();
-//      return "# " + data.getETextNum() + "\n";
    }
 
    @Override
@@ -92,11 +38,6 @@ class EBookCompInt implements Comparable<Integer>
 
    public boolean equals(EBookCompInt obj)
    {
-//      if (obj instanceof EBookEntry)
-//      {
-//         EBookEntry o = (EBookEntry) obj;
-//         return (data.getETextNum() - o.getETextNum() == 0);
-//      }
       return data.equals(obj.data);
    }
 }
@@ -104,62 +45,11 @@ class EBookCompInt implements Comparable<Integer>
 class EBookCompString implements Comparable<String>
 {
    private EBookEntry data;
-   private State state;
    static final String lineSeparator = System.lineSeparator();
-
-   public enum State
-   {
-      ACTIVE,
-      EMPTY,
-      DELETED;
-   }
-
-   EBookCompString()
-   {
-      data = null;
-      state = State.EMPTY;
-   }
 
    EBookCompString(EBookEntry b)
    {
       data = b;
-      state = State.ACTIVE;
-   }
-
-   EBookCompString(EBookEntry b, int st)
-   {
-      data = b;
-      setState(st);
-   }
-
-   private void setState(int st)
-   {
-      switch (st)
-      {
-         case 1:
-            state = State.ACTIVE;
-            break;
-         case 2:
-            state = State.EMPTY;
-            break;
-         case 3:
-            state = State.DELETED;
-            break;
-      }
-   }
-
-   public int getState()
-   {
-      switch (state)
-      {
-         case ACTIVE:
-            return 1;
-         case EMPTY:
-            return 2;
-         case DELETED:
-            return 3;
-      }
-      return 0;
    }
 
    public int compareTo(String o)
@@ -248,7 +138,7 @@ public class Foothill
       EBookEntry.setSortType(EBookEntry.SORT_BY_CREATOR);
       for (int b = 0; b < bookInput.getNumBooks(); b++)
       {
-         book = new EBookCompString(bookInput.getBook(b), 1);
+         book = new EBookCompString(bookInput.getBook(b));
          // insert books into the hash table
          hashTable.insert(book);
          inserted++;
@@ -317,7 +207,7 @@ public class Foothill
       EBookCompInt book;
       for (int b = 0; b < bookInput.getNumBooks(); b++)
       {
-         book = new EBookCompInt(bookInput.getBook(b), 1);
+         book = new EBookCompInt(bookInput.getBook(b));
          // insert all books into the hash table (if SORT_BY_ID)
          if (hashTable.insert(book))
          {
