@@ -17,8 +17,13 @@ public class FHhashQPwFind<KeyType, E extends Comparable<KeyType> >
    // which uses the key rather than the object, to hash.
    protected int myHashKey( KeyType key)
    {
+      int hashVal;
 
-      return 0;
+      hashVal = key.hashCode() % mTableSize;
+      if(hashVal < 0)
+         hashVal += mTableSize;
+
+      return hashVal;
    }
 
    //a trivial modification to findPos()

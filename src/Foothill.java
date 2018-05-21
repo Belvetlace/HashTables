@@ -9,7 +9,19 @@ class EBookCompInt implements Comparable<Integer>
 {
    private EBookEntry data;
    private State state;
-   public enum State {ACTIVE, EMPTY, DELETED};
+
+   public enum State
+   {
+      ACTIVE,
+      EMPTY,
+      DELETED;
+   }
+
+   EBookCompInt()
+   {
+      data = null;
+      state = State.EMPTY;
+   }
 
    EBookCompInt(EBookEntry b, int st)
    {
@@ -33,11 +45,16 @@ class EBookCompInt implements Comparable<Integer>
       }
    }
 
-   public int getState() {
-      switch (state) {
-         case ACTIVE: return 1;
-         case EMPTY: return 2;
-         case DELETED: return 3;
+   public int getState()
+   {
+      switch (state)
+      {
+         case ACTIVE:
+            return 1;
+         case EMPTY:
+            return 2;
+         case DELETED:
+            return 3;
       }
       return 0;
    }
@@ -64,8 +81,12 @@ class EBookCompInt implements Comparable<Integer>
    @Override
    public boolean equals(Object obj)
    {
-
-      return super.equals(obj);
+      if (obj instanceof EBookEntry)
+      {
+         EBookEntry o = (EBookEntry) obj;
+         return (data.getETextNum() - o.getETextNum() == 0);
+      }
+      return false;
    }
 }
 
@@ -73,13 +94,22 @@ class EBookCompString implements Comparable<String>
 {
    private EBookEntry data;
    private State state;
-   public enum State {
+
+   public enum State
+   {
       ACTIVE,
       EMPTY,
       DELETED;
    }
 
-   EBookCompString(EBookEntry b, int st){
+   EBookCompString()
+   {
+      data = null;
+      state = State.EMPTY;
+   }
+
+   EBookCompString(EBookEntry b, int st)
+   {
       data = b;
       setState(st);
    }
@@ -100,11 +130,16 @@ class EBookCompString implements Comparable<String>
       }
    }
 
-   public int getState() {
-      switch (state) {
-         case ACTIVE: return 1;
-         case EMPTY: return 2;
-         case DELETED: return 3;
+   public int getState()
+   {
+      switch (state)
+      {
+         case ACTIVE:
+            return 1;
+         case EMPTY:
+            return 2;
+         case DELETED:
+            return 3;
       }
       return 0;
    }
@@ -112,7 +147,7 @@ class EBookCompString implements Comparable<String>
    @Override
    public int compareTo(String o)
    {
-      return (data.getCreator().compareToIgnoreCase(o));
+      return (data.getTitle().compareToIgnoreCase(o));
    }
 
    @Override
@@ -125,7 +160,7 @@ class EBookCompString implements Comparable<String>
    public int hashCode()
    {
       String s = data.getTitle();
-      return (s != null)? s.hashCode() : 0;
+      return (s != null) ? s.hashCode() : 0;
    }
 
    @Override
@@ -168,8 +203,7 @@ public class Foothill
       if (keyString)
       {
          hashTableString(bookInput, randomIndices);
-      }
-      else
+      } else
       {
          hashTableInt(bookInput, randomIndices);
       }
@@ -189,6 +223,7 @@ public class Foothill
       {
          book = new EBookCompString(bookInput.getBook(b), 1);
          // insert books into the hash table
+         hashTable.insert(book);
 
       }
 
@@ -196,17 +231,15 @@ public class Foothill
       // display NUM_RANDOM_INDICES books from array ...
 
 
-
       // attempt to find on the selected key
-      System.out.println( "The same random books from the hash table " );
+      System.out.println("The same random books from the hash table ");
       for (int k = 0; k < NUM_RANDOM_INDICES; k++)
       {
          try
          {
             bookResult = hashTable.find(bookInput.getBook(randomIndices[k]).getTitle());
 
-         }
-         catch (NoSuchElementException e)
+         } catch (NoSuchElementException e)
          {
             System.out.println(bookInput.getBook(randomIndices[k]).getTitle()
                     + " not found: " + e.getMessage() + " " + e.toString());
@@ -218,11 +251,10 @@ public class Foothill
       // test known successes failures exceptions:
       try
       {
-         bookResult = hashTable.find( "Jack Kerouac" );
+         bookResult = hashTable.find("Jack Kerouac");
          //...
          System.out.println(bookResult.toString());
-      }
-      catch (NoSuchElementException e)
+      } catch (NoSuchElementException e)
       {
          System.out.println("\'Jack Kerouac\' not found: " + e.getMessage() + " " + e.toString());
       }
@@ -230,15 +262,13 @@ public class Foothill
       // more failures
       try
       {
-      }
-      catch (NoSuchElementException e)
+      } catch (NoSuchElementException e)
       {
       }
 
       try
       {
-      }
-      catch (NoSuchElementException e)
+      } catch (NoSuchElementException e)
       {
       }
 
@@ -248,7 +278,7 @@ public class Foothill
    private static void hashTableInt(EBookEntryReader bookInput,
                                     int[] randomIndices)
    {
-      FHhashQPwFind< Integer, EBookCompInt> hashTable
+      FHhashQPwFind<Integer, EBookCompInt> hashTable
               = new FHhashQPwFind<Integer, EBookCompInt>();
 
       EBookEntry.setSortType(EBookEntry.SORT_BY_ID);
@@ -267,7 +297,7 @@ public class Foothill
       EBookCompInt bookResult;
 
       // attempt to find on the selected key
-      System.out.println( "The same random books from the hash table " );
+      System.out.println("The same random books from the hash table ");
       for (int k = 0; k < NUM_RANDOM_INDICES; k++)
       {
          //...
@@ -275,8 +305,7 @@ public class Foothill
          {
             bookResult = hashTable.find(bookInput.getBook(randomIndices[k]).getETextNum());
 
-         }
-         catch (NoSuchElementException e)
+         } catch (NoSuchElementException e)
          {
             //...
          }
@@ -287,27 +316,24 @@ public class Foothill
       // test known successes failures exceptions:
       try
       {
-         bookResult = hashTable.find( -3 );
+         bookResult = hashTable.find(-3);
 
          //...
 
-      }
-      catch (NoSuchElementException e)
+      } catch (NoSuchElementException e)
       {
       }
 
       // more failures
       try
       {
-      }
-      catch (NoSuchElementException e)
+      } catch (NoSuchElementException e)
       {
       }
 
       try
       {
-      }
-      catch (NoSuchElementException e)
+      } catch (NoSuchElementException e)
       {
       }
 
