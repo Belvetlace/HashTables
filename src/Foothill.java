@@ -9,6 +9,7 @@ class EBookCompInt implements Comparable<Integer>
 {
    private EBookEntry data;
    private State state;
+   static final String lineSeparator = System.lineSeparator();
 
    public enum State
    {
@@ -22,6 +23,13 @@ class EBookCompInt implements Comparable<Integer>
       data = null;
       state = State.EMPTY;
    }
+
+   EBookCompInt(EBookEntry b)
+   {
+      data = b;
+      state = State.ACTIVE;
+   }
+
 
    EBookCompInt(EBookEntry b, int st)
    {
@@ -59,7 +67,6 @@ class EBookCompInt implements Comparable<Integer>
       return 0;
    }
 
-   @Override
    public int compareTo(Integer o)
    {
       return (data.getETextNum() - o);
@@ -68,7 +75,12 @@ class EBookCompInt implements Comparable<Integer>
    @Override
    public String toString()
    {
-      return "# " + data.getETextNum() + "\n";
+      return "   # " + data.getETextNum() + "  ---------------" + lineSeparator
+              + "   \"" + data.getTitle() + "\""  + lineSeparator
+              + "   by " + data.getCreator()  + lineSeparator
+              + "   re: " + data.getSubject() + lineSeparator + lineSeparator;
+//      return data.toString();
+//      return "# " + data.getETextNum() + "\n";
    }
 
    @Override
@@ -93,6 +105,7 @@ class EBookCompString implements Comparable<String>
 {
    private EBookEntry data;
    private State state;
+   static final String lineSeparator = System.lineSeparator();
 
    public enum State
    {
@@ -105,6 +118,12 @@ class EBookCompString implements Comparable<String>
    {
       data = null;
       state = State.EMPTY;
+   }
+
+   EBookCompString(EBookEntry b)
+   {
+      data = b;
+      state = State.ACTIVE;
    }
 
    EBookCompString(EBookEntry b, int st)
@@ -143,22 +162,24 @@ class EBookCompString implements Comparable<String>
       return 0;
    }
 
-   @Override
    public int compareTo(String o)
    {
-      return (data.getTitle().compareTo(o));
+      return (data.getCreator().compareTo(o));
    }
 
    @Override
    public String toString()
    {
-      return "# " + data.getTitle() + "\n";
+      return "   # " + data.getETextNum() + "  ---------------" + lineSeparator
+              + "   \"" + data.getTitle() + "\""  + lineSeparator
+              + "   by " + data.getCreator()  + lineSeparator
+              + "   re: " + data.getSubject() + lineSeparator + lineSeparator;
    }
 
    @Override
    public int hashCode()
    {
-      String s = data.getTitle();
+      String s = data.getCreator();
       return (s != null) ? s.hashCode() : 0;
    }
 
@@ -189,13 +210,21 @@ public class Foothill
          return;
       }
       System.out.println(bookInput.getFileName());
-      System.out.println(bookInput.getNumBooks());
+      System.out.println("books in the array: " + bookInput.getNumBooks());
 
       int range = bookInput.getNumBooks();
       Random rand = new Random();
       int[] randomIndices = new int[NUM_RANDOM_INDICES];
       for (int i = 0; i < randomIndices.length; i++)
          randomIndices[i] = rand.nextInt(range);
+
+      // display NUM_RANDOM_INDICES books from array ...
+      System.out.println("\nRandom books from the array:");
+      for (int k = 0; k < NUM_RANDOM_INDICES; k++)
+      {
+         System.out.println(bookInput.getBook(randomIndices[k]).getETextNum()
+                 + " " + bookInput.getBook(randomIndices[k]).getCreator());
+      }
 
       if (keyString)
       {
@@ -214,35 +243,35 @@ public class Foothill
       FHhashQPwFind<String, EBookCompString> hashTable
               = new FHhashQPwFind<String, EBookCompString>();
 
+      int inserted = 0;
       EBookCompString book;
-      EBookEntry.setSortType(EBookEntry.SORT_BY_TITLE);
+      EBookEntry.setSortType(EBookEntry.SORT_BY_CREATOR);
       for (int b = 0; b < bookInput.getNumBooks(); b++)
       {
          book = new EBookCompString(bookInput.getBook(b), 1);
          // insert books into the hash table
          hashTable.insert(book);
+         inserted++;
       }
+      System.out.println("books inserted in the hash table: " + inserted);
 
       EBookCompString bookResult;
-      // display NUM_RANDOM_INDICES books from array ...
-      for (int k = 0; k < NUM_RANDOM_INDICES; k++)
-      {
-
-      }
 
       // attempt to find on the selected key
       System.out.println("The same random books from the hash table STRING");
       for (int k = 0; k < NUM_RANDOM_INDICES; k++)
       {
+         System.out.println("Searching for: "
+                 + bookInput.getBook(randomIndices[k]).getCreator());
          try
          {
-            bookResult = hashTable.find(bookInput.getBook(randomIndices[k]).getTitle());
+            bookResult = hashTable.find(bookInput.getBook(randomIndices[k]).getCreator());
             System.out.println(bookResult.toString());
 
          }
          catch (NoSuchElementException e)
          {
-            System.out.println(bookInput.getBook(randomIndices[k]).getTitle()
+            System.out.println(bookInput.getBook(randomIndices[k]).getCreator()
                     + " not found: " + e.getMessage() + " " + e.toString());
          }
          System.out.println();
@@ -292,7 +321,7 @@ public class Foothill
          // insert all books into the hash table (if SORT_BY_ID)
          if (hashTable.insert(book))
          {
-            System.out.print("inserted " + book.toString());
+            //System.out.print("inserted " + book.toString());
             inserted++;
          } else
          {
@@ -300,18 +329,11 @@ public class Foothill
          }
 
       }
-      System.out.println("books inserted: " + inserted);
+      System.out.println("books inserted in the hash table: " + inserted);
 
-      // display NUM_RANDOM_INDICES books from array ...
       EBookCompInt bookResult;
-      System.out.println("\nRandom books from the array");
-      for (int k = 0; k < NUM_RANDOM_INDICES; k++)
-      {
-         System.out.println(bookInput.getBook(randomIndices[k]).getETextNum());
-      }
-
       // attempt to find on the selected key
-      System.out.println("\nThe same random books from the hash table INT");
+      System.out.println("\nThe same random books from the hash table: INT");
       for (int k = 0; k < NUM_RANDOM_INDICES; k++)
       {
          System.out.println("Searching for: "
@@ -320,8 +342,8 @@ public class Foothill
          {
             bookResult = hashTable.find(bookInput.getBook(randomIndices[k]).getETextNum());
             System.out.print("found: " + bookResult.toString());
-
-         } catch (NoSuchElementException e)
+         }
+         catch (NoSuchElementException e)
          {
             System.out.println(bookInput.getBook(randomIndices[k]).getETextNum()
                     + " not found: " + e.getMessage() + " " + e.toString());
@@ -344,14 +366,18 @@ public class Foothill
       // more failures
       try
       {
+
       } catch (NoSuchElementException e)
       {
+         System.out.println("not found: " + e.getMessage() + " " + e.toString());
       }
 
       try
       {
+
       } catch (NoSuchElementException e)
       {
+         System.out.println("not found: " + e.getMessage() + " " + e.toString());
       }
 
    }
