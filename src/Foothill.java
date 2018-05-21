@@ -88,7 +88,7 @@ public class Foothill
    // -------  main --------------
    public static void main(String[] args) throws Exception
    {
-      boolean keyString = false; // false to run with Integer, true - String
+      boolean keyString = true; // false to run with Integer, true - String
 
       EBookEntryReader bookInput =
               new EBookEntryReader("catalog-short4.txt");
@@ -156,7 +156,7 @@ public class Foothill
          try
          {
             bookResult = hashTable.find(bookInput.getBook(randomIndices[k]).getCreator());
-            System.out.println(bookResult.toString());
+            System.out.println("found:\n" + bookResult);
 
          }
          catch (NoSuchElementException e)
@@ -167,29 +167,36 @@ public class Foothill
          System.out.println();
       }
 
-
-      // test known successes failures exceptions:
+      // failures
       try
       {
          bookResult = hashTable.find("Jack Kerouac");
-         //...
-         System.out.println(bookResult.toString());
+         System.out.println("found:\n" + bookResult);
       } catch (NoSuchElementException e)
       {
          System.out.println("\'Jack Kerouac\' not found: " + e.getMessage() + " " + e.toString());
       }
 
-      // more failures
       try
       {
+         bookResult = hashTable.find("");
+         System.out.println("found:\n" + bookResult);
       } catch (NoSuchElementException e)
       {
+         System.out.println("empty string as a key: " + e.getMessage() + " " + e.toString());
       }
 
       try
       {
+         bookResult = hashTable.find(null);
+         System.out.println("found:\n" + bookResult);
       } catch (NoSuchElementException e)
       {
+         System.out.println("null as a key: " + e.getMessage() + " " + e.toString());
+      }
+      catch (NullPointerException ex)
+      {
+         System.out.println("null as a key: " + ex.getMessage() + " " + ex.toString());
       }
 
    }
@@ -241,30 +248,32 @@ public class Foothill
          System.out.println();
       }
 
-
-      // test known successes failures exceptions:
+      // failures
       try
       {
          bookResult = hashTable.find(-3);
-         //...
       }
       catch (NoSuchElementException e)
       {
          System.out.println("-3 not found: " + e.getMessage() + " " + e.toString());
       }
 
-      // more failures
       try
       {
+         bookResult = hashTable.find(null);
 
       } catch (NoSuchElementException e)
       {
          System.out.println("not found: " + e.getMessage() + " " + e.toString());
       }
+      catch (NullPointerException ex)
+      {
+         System.out.println("argument is null: " + ex.getMessage() + " " + ex.toString());
+      }
 
       try
       {
-
+         bookResult = hashTable.find(0);
       } catch (NoSuchElementException e)
       {
          System.out.println("not found: " + e.getMessage() + " " + e.toString());
